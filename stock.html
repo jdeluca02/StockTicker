@@ -1,23 +1,21 @@
 <html>
 <head>
-    
     <title>Stock Ticker App</title>
-    
+    <script type="text/javascript" src="stockJS.js"></script>
 </head>
-    
 <body>
-    
-    <h1>Enter a stock ticker ID or a company name below: </h1>
-    
-    <form method="get" action="stockJS.js">
-        
-        <div>Stock Ticker: <input type="text" /></div>
-        <br>
-        <div>Company Name: <input type="text" /></div>
-        <br>
-        <input type="submit">
-        
+  <h1>Companies and Stocks Finder</h1>
+  <h2>Enter a stock ticker ID or a company name below:</h2>
+     <form method = "GET" action = "http://localhost:3000">
+
+       <select name="choose">
+         <option value="0">--Select--</option>
+         <option value="1">Company Name</option>
+         <option value="2">Stock Ticker</option>
+       </select>
+
+       <input type="text" id="input_val" name="input_val">
+       <input type = "submit" name = "search" value = "Search">
     </form>
-    
 </body>
 </html>
