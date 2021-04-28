@@ -6,7 +6,7 @@ var qs = require('querystring');
 const MongoClient = require('mongodb').MongoClient;
 
 // connection string
-const mongoUrl = "mongodb+srv://amybui:dbUser2014@cluster0.u3iji.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+const mongoUrl = "mongodb+srv://jdeluc02:Tufts2021@cluster.g81rs.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
 
 
 const server = http.createServer((req, res) => {
