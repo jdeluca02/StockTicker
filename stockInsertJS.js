@@ -15,8 +15,8 @@ csvtojson()
       (err, client) => {
         if (err) throw err;
         client
-          .db("stockList")
-          .collection("companies")
+          .db("stocks")
+          .collection("companyList")
           .insertMany(csvData, (err, res) => {
             if (err) throw err;
             console.log(`Inserted: ${res.insertedCount} rows`);
