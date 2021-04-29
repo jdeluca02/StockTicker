@@ -194,7 +194,7 @@ http.createServer(function (req,res)
 				}
 			
  
-				var dbo = db.db("companies");    
+				var dbo = db.db("stocks");    
 				var collection = dbo.collection("companies");   
 			
 			    //Call the query
