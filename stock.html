@@ -1,20 +1,19 @@
 <html>
 <head>
-    <title>Stock Ticker App</title>
-    <script type="text/javascript" src="stockJS.js"></script>
+<script type="text/javascript" src="stockTickerApp.js"></script>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Stock Ticker Match</title>
 </head>
 <body>
-  <h1>Companies and Stocks Finder</h1>
-  <h2>Enter a stock ticker ID or a company name below:</h2>
-     <form method = "post" action = "https://stock-hw.herokuapp.com/">
 
-       <select name="choose">
-         <option value="1">Company Name</option>
-         <option value="2">Stock Ticker</option>
-       </select>
+<h1>Stock Ticker App</h1>
+<h2> Please enter a company name or stock ticker in the box below. <br> </h2>
+<form method='post' action="stockTickerApp">
+	<p>Enter here: <input type="text"  name='search' /></p>
+	<input type="radio"  name="c_or_t" value = "Company" checked/>Company Name <br> <br>
+	<input type="radio"  name='c_or_t' value = "Ticker"/>Ticker Name <br> <br>
+	<input  type = "submit" value = "Search!"/>
+</form>
 
-       <input type="text" id="input_val" name="input_val">
-       <input type = "submit" name = "search" value = "Search">
-    </form>
 </body>
 </html>
