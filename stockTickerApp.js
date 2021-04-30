@@ -63,7 +63,7 @@ http.createServer(function (req,res)
 					} 
 					else {
 						if (items.length == 0){
-							res.write("None found! Either check your search for spelling mistakes, or the search you're looking for doesn't exist!");
+							res.write("This is the file. None found! Either check your search for spelling mistakes, or the search you're looking for doesn't exist!");
 						}
 						else {
 							for (i=0; i<items.length; i++) {
