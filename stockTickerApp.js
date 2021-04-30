@@ -7,7 +7,7 @@ http.createServer(function (req,res)
 {	
 	//Load home page
 	 if (req.url === "/") {  
-	 	file = 'stock.html';  
+	 	file = 'index.html';  
 	 	fs.readFile(file, function(err, txt) {  
 	 		res.writeHead(200, {'Content-Type': 'text/html'});           
 	 		res.write(txt);          
@@ -47,14 +47,14 @@ http.createServer(function (req,res)
 			
  
 				var dbo = db.db("stocks");    
-				var collection = dbo.collection("companyList");   
+				var collection = dbo.collection("companies");   
 			
 			    //Call the query
 			    if (type == "Company") {
-			    	theQuery = {Company: search};
+			    	theQuery = {company: search};
 			    }
 			    if (type == "Ticker") {
-			    	theQuery = {Ticker: search};
+			    	theQuery = {ticker: search};
 			    }
 			    
 				collection.find(theQuery).toArray(function(err, items) {  
@@ -67,7 +67,7 @@ http.createServer(function (req,res)
 						}
 						else {
 							for (i=0; i<items.length; i++) {
-								res.write(items[i].Company + " has ticker " + items[i].Ticker + "<br>");  
+								res.write(items[i].company + " has ticker " + items[i].ticker + "<br>");  
 							}
 						}
 						res.end();
