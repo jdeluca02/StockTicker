@@ -1,79 +1,127 @@
-var http = require("http");
-var fs = require("fs");
-var qs = require("querystring");
+/* eslint-env es6 */
+/* eslint-disable */
 
 
-const MongoClient = require('mongodb').MongoClient;
-const url = "mongodb+srv://jdeluc02:Tufts2021@cluster.g81rs.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+var http=require('http');
+var url =require('url');
+var MongoClient = require('mongodb').MongoClient;
+var port = process.env.PORT || 3000;
 
-  MongoClient.connect(url, { useUnifiedTopology: true }, function(err, db) {
-  if(err) { return console.log(err); return;}
-  //var port = 8080
-  var port = process.env.PORT || 3000;
-  
-  http.createServer(function (req, res) 
-    {
-  	  
-  	  if (req.url == "/")
-  	  {
-  		  file = 'index.html';
-  		  fs.readFile(file, function(err, txt) {
-      	  res.writeHead(200, {'Content-Type': 'text/html'});
-            res.write(txt);
-            res.end();
-  		  });
-  	  }
-  	  else if (req.url == "/process")
-  	  {
-  		 res.writeHead(200, {'Content-Type':'text/html'});
-  		 pdata = "";
-  		 req.on('data', data => {
-             pdata += data.toString();
-           });
-  
-  		// when complete POST data is received
-  		req.on('end', () => {
-  			pdata = qs.parse(pdata);
-            var dbo = db.db("stocks");
-            
-            if (pdata["c_or_t"] == "ticker") {
-                res.write("Input ticker symbol: " + pdata["text"] + "<br>");
-                var query = ({"ticker": pdata["text"]});
-                var filter = {projection: {"name": 1, "ticker": 1, "_id":0}};
-                dbo.collection("companies").find(query, filter).toArray(function(err, result) {
-                    if (err) {
-                        res.write("Please input a valid ticker symbol.");
-                        throw err;
-                    }
-                    for (var i = 0; i < result.length; i++) {
-                        res.write("Company Name: " + result[i]["name"] + "<br>");
-                    }
-                    res.end();
-                });
-            }
-            else if (pdata["c_or_t"] == "company") {
-                res.write("Input company name: " + pdata["text"] + "<br>");
-                var query = ({"name": pdata["text"]});
-                var filter = {projection: {"name": 1, "ticker": 1, "_id":0}};
-                dbo.collection("companies").find(query, filter).toArray(function(err, result) {
-                    if (err) {
-                        res.write("Please input a valid company name.");
-                        throw err;
-                    }
-                    res.write("Ticker Symbol: " + result[0]["ticker"]);
-                    res.end();
-                });
-            }
-  		});
-  	  }
-  	  else 
-  	  {
-  		  res.writeHead(200, {'Content-Type':'text/html'});
-  		  res.write ("Unknown page request");
-  		  res.end();
-  	  }
+const uri = "mongodb+srv://jdeluc02:Tufts2021@cluster.g81rs.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+var companyname = "";
+var ticker = "";
+http.createServer(function(req,res){
+ if (req.url === '/favicon.ico') {
+    	     res.writeHead(200, {'Content-Type': 'image/x-icon'} );
+    	     console.log('favicon requested');
+    	     return;
+        }
+
+ 	res.writeHead(200,{'Content-Type':'text/html'});
+
+	var qobj = url.parse(req.url,true);
+	var txt = qobj.query.name; 
+	MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true},function(err, db) {
+ 		 if (err) {
+       			console.log(err);
+			return;
+      		 } 
+  	 	var dbo = db.db("stocks");
+
+     dbo.collection("companies").findOne({ $or: [{company: txt}, {ticker: txt}]} , (err, result) => {
+   
+  	 if (result == null) {
+  		  res.write("Company Name or Stock Ticker was not found.");
+  		  return;
+  	 }
+
+      companyname = result.company;
+      ticker = result.ticker;
+      res.write("Company Name: " + companyname + "\n" + "Company Ticker: " + ticker);
+      db.close();
+    })
+ 	 });
+ 
   }).listen(port);
-});
+
+
+
+// var http = require("http");
+// var fs = require("fs");
+// var qs = require("querystring");
+
+
+// const MongoClient = require('mongodb').MongoClient;
+// const url = "mongodb+srv://jdeluc02:Tufts2021@cluster.g81rs.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+
+//   MongoClient.connect(url, { useUnifiedTopology: true }, function(err, db) {
+//   if(err) { return console.log(err); return;}
+//   //var port = 8080
+//   var port = process.env.PORT || 3000;
+  
+//   http.createServer(function (req, res) 
+//     {
+  	  
+//   	  if (req.url == "/")
+//   	  {
+//   		  file = 'index.html';
+//   		  fs.readFile(file, function(err, txt) {
+//       	  res.writeHead(200, {'Content-Type': 'text/html'});
+//             res.write(txt);
+//             res.end();
+//   		  });
+//   	  }
+//   	  else if (req.url == "/process")
+//   	  {
+//   		 res.writeHead(200, {'Content-Type':'text/html'});
+//   		 pdata = "";
+//   		 req.on('data', data => {
+//              pdata += data.toString();
+//            });
+  
+//   		// when complete POST data is received
+//   		req.on('end', () => {
+//   			pdata = qs.parse(pdata);
+//             var dbo = db.db("stocks");
+            
+//             if (pdata["c_or_t"] == "ticker") {
+//                 res.write("Input ticker symbol: " + pdata["text"] + "<br>");
+//                 var query = ({"ticker": pdata["text"]});
+//                 var filter = {projection: {"name": 1, "ticker": 1, "_id":0}};
+//                 dbo.collection("companies").find(query, filter).toArray(function(err, result) {
+//                     if (err) {
+//                         res.write("Please input a valid ticker symbol.");
+//                         throw err;
+//                     }
+//                     for (var i = 0; i < result.length; i++) {
+//                         res.write("Company Name: " + result[i]["name"] + "<br>");
+//                     }
+//                     res.end();
+//                 });
+//             }
+//             else if (pdata["c_or_t"] == "company") {
+//                 res.write("Input company name: " + pdata["text"] + "<br>");
+//                 var query = ({"name": pdata["text"]});
+//                 var filter = {projection: {"name": 1, "ticker": 1, "_id":0}};
+//                 dbo.collection("companies").find(query, filter).toArray(function(err, result) {
+//                     if (err) {
+//                         res.write("Please input a valid company name.");
+//                         throw err;
+//                     }
+//                     res.write("Ticker Symbol: " + result[0]["ticker"]);
+//                     res.end();
+//                 });
+//             }
+//   		});
+//   	  }
+//   	  else 
+//   	  {
+//   		  res.writeHead(200, {'Content-Type':'text/html'});
+//   		  res.write ("Unknown page request");
+//   		  res.end();
+//   	  }
+//   }).listen(port);
+// });
 
 //var http = require('http');
 //var port = process.env.PORT || 3000;
